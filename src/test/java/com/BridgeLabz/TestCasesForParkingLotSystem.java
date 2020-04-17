@@ -16,28 +16,32 @@ public class TestCasesForParkingLotSystem {
     }
 
     @Test
-    public void givenAVehicle_WhenPark_ShouldReturnTrue() {
+    public void givenAVehicle_WhenPark_ShouldReturnTrue() throws ParkingLotSystemException {
         boolean parkVehicle = parkingLotSystem.park(new Object());
         Assert.assertTrue(parkVehicle);
 
     }
 
     @Test
-    public void givenAVehicle_WhenUnpark_ShouldReturnTrue() {
+    public void givenVehicle_WhenAlreadyParked_ShouldReturnFalse() throws ParkingLotSystemException {
+        try {
+            parkingLotSystem.park(vehicle);
+            parkingLotSystem.park(new Object());
+        } catch (ParkingLotSystemException e) {
+            Assert.assertEquals("Parking is full", e.message);
+        }
+    }
+
+    @Test
+    public void givenAVehicle_WhenUnpark_ShouldReturnTrue() throws ParkingLotSystemException {
         parkingLotSystem.park(vehicle);
         boolean unParkVehicle = parkingLotSystem.unPark(vehicle);
         Assert.assertTrue(unParkVehicle);
     }
 
-    @Test
-    public void givenVehicle_WhenAlreadyParked_ShouldReturnFalse() {
-        parkingLotSystem.park(vehicle);
-        boolean isParkVehiclde = parkingLotSystem.park(new Object());
-        Assert.assertFalse(isParkVehiclde);
-    }
 
     @Test
-    public void givenVehicle_WhenAlreadyUnParked_ShouldReturnFalse() {
+    public void givenVehicle_WhenAlreadyUnParked_ShouldReturnFalse() throws ParkingLotSystemException {
         parkingLotSystem.park(vehicle);
         boolean unParkVehicle = parkingLotSystem.unPark(new Object());
         Assert.assertFalse(unParkVehicle);
