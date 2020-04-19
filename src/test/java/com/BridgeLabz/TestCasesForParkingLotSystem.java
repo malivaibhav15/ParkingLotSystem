@@ -56,4 +56,14 @@ public class TestCasesForParkingLotSystem {
         boolean unParked = parkingLotSystem.unPark(bus);
         Assert.assertFalse(unParked);
     }
+
+    @Test
+    public void givenVehicle_WhenUnPark_ShouldInformOwner()
+    {
+        parkingLotSystem.park(vehicle);
+        parkingLotSystem.park(car);
+        parkingLotSystem.unPark(vehicle);
+        parkingLotSystem.unPark(car);
+        Assert.assertEquals("Parking lot is empty", Owner.ParkingLotInformation);
+    }
 }
