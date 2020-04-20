@@ -12,22 +12,23 @@ public class ParkingLotSystem {
         this.parkingCapacity = parkingCapacity;
     }
 
-    public boolean park(Object vehicle) {
+    public boolean park(Object vehicle) throws ParkingLotSystemException {
         if (list.size() == this.parkingCapacity) {
             Owner.ParkingLotInformation = "Parking is full";
             AirportSecurity.parkingLotInformation = "Parking is full";
-        } else {
-            list.add(vehicle);
-            return true;
+            throw new ParkingLotSystemException("Parking is full");
         }
-        return false;
+        list.add(vehicle);
+        return true;
     }
 
-    public boolean unPark(Object vehicle) {
+    public boolean unPark(Object vehicle) throws ParkingLotSystemException {
         if (list.contains(vehicle)) {
             list.remove(vehicle);
-            if (list.size() == 0)
+            if (list.size() == 0) {
                 Owner.ParkingLotInformation = "Parking lot is empty";
+                throw new ParkingLotSystemException("Parking lot is empty");
+            }
             return true;
         }
         return false;
