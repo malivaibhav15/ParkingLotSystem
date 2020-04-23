@@ -21,5 +21,6 @@ public class ParkingAttendant {
             throw new ParkingLotSystemException(ParkingLotSystemException.ExceptionType.PARKING_LOT_FULL, "PARKING LOT IS FULL");
         parkingLot.put(emptyParkingSlot, vehicle);
         return parkingLot;
+
     }
 }
