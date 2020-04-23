@@ -8,6 +8,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalTime;
+
 public class TestCasesForParkingLotSystem {
 
     ParkingLotSystem parkingLotSystem = null;
@@ -123,11 +125,11 @@ public class TestCasesForParkingLotSystem {
         parkingLotSystem.park("Tata Altroz");
         parkingLotSystem.park("Tata Tiago");
         parkingLotSystem.unPark("Swift Dzire");
-        Assert.assertEquals(owner.getFlag(), Owner.Flag.PARKING_IS_FULL);
+        Assert.assertEquals(owner.getFlag(), Owner.Flag.PARKING_IS_VACANT);
     }
 
     @Test
-    public void givenCar_IfFoundInParkingLot_ShouldReturnTrue() throws ParkingLotSystemException {
+    public void givenVehicle_IfFoundInParkingLot_ShouldReturnTrue() throws ParkingLotSystemException {
         parkingLotSystem.park("Tata Indigo");
         parkingLotSystem.park("Tata Tiago");
         parkingLotSystem.park("Tata Harrier");
@@ -136,12 +138,20 @@ public class TestCasesForParkingLotSystem {
     }
 
     @Test
-    public void givenCar_IfNotFoundInParkingLot_ShouldReturnFalse() throws ParkingLotSystemException {
+    public void givenVehicle_IfNotFoundInParkingLot_ShouldReturnFalse() throws ParkingLotSystemException {
         parkingLotSystem.park("Hyundai Verna");
         parkingLotSystem.park("Hyundai Grand i10");
         parkingLotSystem.park("Hyundai Aura");
         boolean isPresent = parkingLotSystem.isVehiclePresentInLot("Hyundai Santro");
         Assert.assertFalse(isPresent);
+    }
+
+    @Test
+    public void givenAVehicle_WhenParkedAndThenUnparked_ShouldReturnArrivalTimeAndDepartureTime() throws ParkingLotSystemException {
+        parkingLotSystem.park("Tata Indigo CS");
+        parkingLotSystem.unPark("Tata Indigo CS");
+        Assert.assertEquals(parkingLotSystem.arrivalTime, LocalTime.now());
+        Assert.assertEquals(parkingLotSystem.departureTime,  LocalTime.now());
     }
 
 }
