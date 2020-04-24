@@ -17,7 +17,8 @@ public class PoliceDepartment
         this.parkingLotSystem = parkingLotSystem;
     }
 
-    public List getColouredVehicleList(String colour) {
+    public List getColouredVehicleList(String colour)
+    {
         List colouredVehicle = new ArrayList<String>();
         for (HashMap<Integer, Vehicle> vehicleHashMap : parkingLotSystem.lotMaps.values()) {
             while (vehicleHashMap.values().remove(null));
