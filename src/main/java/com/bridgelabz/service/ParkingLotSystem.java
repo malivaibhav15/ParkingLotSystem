@@ -1,5 +1,8 @@
-package com.bridgelabz;
+package com.bridgelabz.service;
 
+import com.bridgelabz.utilities.ParkingAttendant;
+import com.bridgelabz.utilities.ParkingBill;
+import com.bridgelabz.utilities.ParkingLot;
 import com.bridgelabz.exception.ParkingLotException;
 import com.bridgelabz.observer.Subject;
 
