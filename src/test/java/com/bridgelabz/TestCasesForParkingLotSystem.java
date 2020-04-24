@@ -7,6 +7,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 public class TestCasesForParkingLotSystem
 {
     ParkingLotSystem parkingLotSystem = null;
@@ -164,5 +166,20 @@ public class TestCasesForParkingLotSystem
         Integer getParkingLot = attendant.getLotNumber(vehicle1);
         Integer getParkingSlot = attendant.getMyParkingSlot(vehicle1);
         Assert.assertEquals("1 1", getParkingLot + " " + getParkingSlot);
+    }
+
+    @Test
+    public void givenVehicleColour_PoliceShouldGetTheListOfVehicleLocation() throws ParkingLotException {
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(8, 2);
+        Vehicle vehicle1 = new Vehicle("white");
+        parkingLotSystem1.parkVehicle(vehicle, 1);
+        parkingLotSystem1.parkVehicle(vehicle1, 2);
+        parkingLotSystem1.parkVehicle(new Vehicle("black"),1);
+        parkingLotSystem1.parkVehicle(new Vehicle("white"),1);
+        parkingLotSystem1.parkVehicle(new Vehicle("black"),1);
+        parkingLotSystem1.parkVehicle(new Vehicle("red"),1);
+        PoliceDepartment police = new PoliceDepartment(parkingLotSystem1);
+        List list = police.getColouredVehicleList("white");
+        Assert.assertEquals(3,list.size());
     }
 }
