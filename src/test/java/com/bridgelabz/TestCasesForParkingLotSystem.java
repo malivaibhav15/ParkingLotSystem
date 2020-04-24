@@ -18,7 +18,8 @@ public class TestCasesForParkingLotSystem
     ParkingBill parkingBill = null;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+    {
         parkingLotSystem = new ParkingLotSystem(100, 1);
         vehicle = new Object();
         attendant = new ParkingAttendant();
