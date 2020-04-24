@@ -3,6 +3,9 @@ package com.bridgelabz.utilities;
 public class Vehicle
 {
     public String colour= "white";
+    public String plateNumber = "XX00 XX 0000";
+    public String carCompany = "Toyota";
+    public String attendantName;
     public enum Driver {NORMAL, HANDICAP}
 
     public enum VehicleType {MEDIUM, LARGE}
