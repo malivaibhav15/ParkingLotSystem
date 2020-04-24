@@ -2,10 +2,7 @@ package com.bridgelabz;
 
 import com.bridgelabz.exception.ParkingLotException;
 import com.bridgelabz.service.ParkingLotSystem;
-import com.bridgelabz.utilities.AirportSecurityPersonal;
-import com.bridgelabz.utilities.Owner;
-import com.bridgelabz.utilities.ParkingAttendant;
-import com.bridgelabz.utilities.ParkingBill;
+import com.bridgelabz.utilities.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -156,5 +153,16 @@ public class TestCasesForParkingLotSystem
                 attendant.getLotNumber(vehicle),
                 3);
         Assert.assertEquals(true,isUnParked);
+    }
+
+    @Test
+    public void givenVehicleTypeIsLarge_ShouldParkedAtMostFreeSpace() throws ParkingLotException {
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(4, 2);
+        Vehicle vehicle1 = new Vehicle(Vehicle.VehicleType.LARGE);
+        parkingLotSystem1.parkVehicle(vehicle, 1);
+        parkingLotSystem1.parkVehicle(vehicle1, 2);
+        Integer getParkingLot = attendant.getLotNumber(vehicle1);
+        Integer getParkingSlot = attendant.getMyParkingSlot(vehicle1);
+        Assert.assertEquals("1 1", getParkingLot + " " + getParkingSlot);
     }
 }
