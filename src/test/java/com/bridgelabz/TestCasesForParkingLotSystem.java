@@ -21,7 +21,7 @@ public class TestCasesForParkingLotSystem
     {
         parkingLotSystem = new ParkingLotSystem(100, 1);
         vehicle = new Object();
-        attendant = new ParkingAttendant();
+        attendant = new ParkingAttendant("abc");
         parkingBill = new ParkingBill();
     }
 
@@ -181,5 +181,20 @@ public class TestCasesForParkingLotSystem
         PoliceDepartment police = new PoliceDepartment(parkingLotSystem1);
         List list = police.getColouredVehicleList("white");
         Assert.assertEquals(3,list.size());
+    }
+
+    @Test
+    public void givenVehicle_WhenCompanyNameProvided_ShouldReturnListOfVehicles() throws ParkingLotException {
+        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(8, 2);
+        Vehicle vehicle1 = new Vehicle("blue", "GJ06KL7860", "Toyota", attendant.attendantName);
+        parkingLotSystem1.parkVehicle(vehicle, 1);
+        parkingLotSystem1.parkVehicle(vehicle1, 2);
+        parkingLotSystem1.parkVehicle(new Vehicle("blue", "GJ06KL7860", "Toyota", attendant.attendantName), 1);
+        parkingLotSystem1.parkVehicle(new Vehicle("red", "GJ06KL1456", "Toyota", attendant.attendantName), 1);
+        parkingLotSystem1.parkVehicle(new Vehicle("blue", "GJ06KL9008", "Toyota", attendant.attendantName), 1);
+        parkingLotSystem1.parkVehicle(new Vehicle("white", "GJ06KL3845", "Toyota", attendant.attendantName), 1);
+        PoliceDepartment police = new PoliceDepartment(parkingLotSystem1);
+        List list = police.getDetailsOfParticularTypeOfVehicle("Toyota", "blue");
+        Assert.assertEquals(3, list.size());
     }
 }
