@@ -67,7 +67,8 @@ public class ParkingLotSystem implements Subject
 
     public boolean isVehicleParked(Object vehicle)
     {
-        for (HashMap map : lotMaps.values()) {
+        for (HashMap map : lotMaps.values())
+        {
             if (map.containsValue(vehicle))
                 return true;
         }
