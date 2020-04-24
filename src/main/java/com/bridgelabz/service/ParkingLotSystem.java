@@ -65,7 +65,8 @@ public class ParkingLotSystem implements Subject
         this.notifyObservers();
     }
 
-    public boolean isVehicleParked(Object vehicle) {
+    public boolean isVehicleParked(Object vehicle)
+    {
         for (HashMap map : lotMaps.values()) {
             if (map.containsValue(vehicle))
                 return true;
@@ -73,8 +74,10 @@ public class ParkingLotSystem implements Subject
         return false;
     }
 
-    public boolean unParkVehicle(Object vehicle, Integer parkingSlot, Integer parkingLotNumber, int departingHour) {
-        if (lotMaps.get(parkingLotNumber).containsValue(vehicle)) {
+    public boolean unParkVehicle(Object vehicle, Integer parkingSlot, Integer parkingLotNumber, int departingHour)
+    {
+        if (lotMaps.get(parkingLotNumber).containsValue(vehicle))
+        {
             lotMaps.get(parkingLotNumber).put(parkingSlot, null);
             counter--;
             parkingBill.departureHour(departingHour);
@@ -83,5 +86,4 @@ public class ParkingLotSystem implements Subject
         }
         return false;
     }
-
 }
