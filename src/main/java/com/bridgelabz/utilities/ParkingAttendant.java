@@ -5,9 +5,17 @@ import java.util.HashMap;
 
 public class ParkingAttendant
 {
+    public String attendantName;
     static HashMap<Integer, HashMap> lotMaps;
     Owner owner = new Owner();
     static HashMap<Integer, Object> currentMap = new HashMap<>();
+
+    public ParkingAttendant(String attendantName) {
+        this.attendantName = attendantName;
+    }
+
+    public ParkingAttendant() {
+    }
 
     public Integer getMyParkingSlot(Object vehicle)
     {
