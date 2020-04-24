@@ -25,8 +25,10 @@ public class Vehicle
         this.colour = colour;
     }
 
-    public Vehicle(String colour, Driver driver) {
+    public Vehicle(String colour, String plateNumber, String carCompany, String attendantName) {
         this.colour = colour;
-        this.driver = driver;
+        this.plateNumber = plateNumber;
+        this.carCompany = carCompany;
+        this.attendantName = attendantName;
     }
 }
