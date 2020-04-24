@@ -1,4 +1,4 @@
-package com.bridgelabz;
+package com.bridgelabz.utilities;
 
 import java.util.HashMap;
 

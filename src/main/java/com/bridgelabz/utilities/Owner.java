@@ -1,4 +1,4 @@
-package com.bridgelabz;
+package com.bridgelabz.utilities;
 
 import com.bridgelabz.exception.ParkingLotException;
 
