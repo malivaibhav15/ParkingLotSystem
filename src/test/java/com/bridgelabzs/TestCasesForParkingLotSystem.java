@@ -21,7 +21,7 @@ public class TestCasesForParkingLotSystem
     {
         parkingLotSystem = new ParkingLotSystem(100, 1);
         vehicle = new Object();
-        attendant = new ParkingAttendant("abc");
+        attendant = new ParkingAttendant("vaibhav");
         parkingBill = new ParkingBill();
     }
 
