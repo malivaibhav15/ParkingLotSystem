@@ -324,4 +324,28 @@ public class TestCasesForParkingLotSystem {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void givenVehicleTypeAndVehicleSize_WhenVehicleTypeAndSizeMatch_ShouldReturnVehiclesListOnRowB() {
+        PoliceDepartment policeDepartment = new PoliceDepartment(parkingLotSystem);
+        Vehicle vehicleOne = new Vehicle("1", Vehicle.DriverType.HANDICAP, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.BLUE, Vehicle.VehicleModel.BMW, "ROy");
+        Vehicle vehicleTwo = new Vehicle("2", Vehicle.DriverType.HANDICAP, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.BLUE, Vehicle.VehicleModel.BMW, "ROy");
+        Vehicle vehicleThree = new Vehicle("3", Vehicle.DriverType.HANDICAP, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.BLUE, Vehicle.VehicleModel.BMW, "ROy");
+        Vehicle vehicleFour = new Vehicle("4", Vehicle.DriverType.HANDICAP, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.BLUE, Vehicle.VehicleModel.BMW, "ROy");
+        try {
+            parkingLotSystem.park(vehicleOne);
+            parkingLotSystem.park(vehicleTwo);
+            parkingLotSystem.park(vehicleThree);
+            parkingLotSystem.park(vehicleFour);
+            Map<String, Vehicle> vehiclesList = policeDepartment.getVehiclesByRow(Vehicle.DriverType.HANDICAP,
+                    Vehicle.VehicleSize.SMALL, 'B');
+            Assert.assertEquals(2, vehiclesList.size());
+        } catch (ParkingLotSystemException e) {
+            e.printStackTrace();
+        }
+    }
 }
