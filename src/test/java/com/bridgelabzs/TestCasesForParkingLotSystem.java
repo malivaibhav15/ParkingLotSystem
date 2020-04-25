@@ -1,200 +1,284 @@
-package com.bridgelabz;
+package com.bridgelabzs;
 
-import com.bridgelabz.exception.ParkingLotException;
-import com.bridgelabz.service.ParkingLotSystem;
-import com.bridgelabz.utilities.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
 
-public class TestCasesForParkingLotSystem
-{
+public class TestCasesForParkingLotSystem {
     ParkingLotSystem parkingLotSystem = null;
-    Object vehicle = null;
-    ParkingAttendant attendant = null;
-    ParkingBill parkingBill = null;
+    Vehicle vehicle = null;
+    ParkingLotOwner parkingLotOwner = null;
+    AirportSecurity airportSecurity = null;
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    Date date = new Date();
 
     @Before
-    public void setUp()
-    {
-        parkingLotSystem = new ParkingLotSystem(100, 1);
-        vehicle = new Object();
-        attendant = new ParkingAttendant("vaibhav");
-        parkingBill = new ParkingBill();
+    public void setUp() {
+        parkingLotSystem = new ParkingLotSystem(2, 3);
+        parkingLotOwner = new ParkingLotOwner();
+        airportSecurity = new AirportSecurity();
     }
 
     @Test
-    public void givenVehicle_BeenParked_ShouldReturnTrue() throws ParkingLotException {
-        parkingLotSystem.parkVehicle(vehicle, 1);
-        boolean isParked = parkingLotSystem.isVehicleParked(vehicle);
-        Assert.assertTrue(isParked);
-    }
-
-    @Test
-    public void givenVehicle_WhenUnParked_ShouldReturnTrue() throws ParkingLotException {
-        parkingLotSystem.parkVehicle(vehicle, 1);
-        Integer getSlot = attendant.getMyParkingSlot(vehicle);
-        boolean isUnParked = parkingLotSystem.unParkVehicle(vehicle, getSlot, 1, 4);
-        Assert.assertTrue(isUnParked);
-    }
-
-    @Test
-    public void givenVehicle_WhenNotParked_ShouldNotBeUnParked() {
-        boolean isUnParked = parkingLotSystem.unParkVehicle(vehicle, attendant.getMyParkingSlot(vehicle), 1, 4);
-        Assert.assertFalse(isUnParked);
-    }
-
-    @Test
-    public void givenVehicle_WhenAlreadyParked_ShouldNotBeParkedAgain() {
+    public void givenAVehicleToPark_WhenParkedInParkingLot_ShouldReturnTrue() {
         try {
-            parkingLotSystem.parkVehicle(vehicle, 1);
-            parkingLotSystem.parkVehicle(vehicle, 2);
-        } catch (ParkingLotException e) {
-            Assert.assertEquals(e.type, ParkingLotException.ExceptionType.VEHICLE_ALREADY_PRESENT);
+            vehicle = new Vehicle("1", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                    Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Roy");
+            parkingLotSystem.park(vehicle);
+            boolean isPark = parkingLotSystem.isVehicleParked(vehicle);
+            Assert.assertTrue(isPark);
+        } catch (ParkingLotSystemException e) {
+            e.printStackTrace();
         }
     }
 
     @Test
-    public void givenVehicles_WhenParkingFull_ShouldThrowException() {
-        ParkingLotSystem parkingLotSystem = new ParkingLotSystem(5, 1);
+    public void givenAVehicle_WhenAlreadyParkedInParkingLot_ShouldThrowException() {
+        parkingLotSystem = new ParkingLotSystem(3, 3);
         try {
-            parkingLotSystem.parkVehicle(vehicle, 1);
-            parkingLotSystem.parkVehicle(new Object(), 1);
-            parkingLotSystem.parkVehicle(new Object(), 1);
-            parkingLotSystem.parkVehicle(new Object(), 1);
-            parkingLotSystem.parkVehicle(new Object(), 1);
-            parkingLotSystem.parkVehicle(new Object(), 1);
-        } catch (ParkingLotException e) {
-            Assert.assertEquals("Parking lot is full.", e.getMessage());
+            parkingLotSystem.park(new Vehicle("1", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                    Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Roy"));
+            parkingLotSystem.park(new Vehicle("2", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                    Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Roy"));
+            parkingLotSystem.park(new Vehicle("3", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                    Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Roy"));
+        } catch (ParkingLotSystemException e) {
+            Assert.assertEquals(ParkingLotSystemException.ExceptionType.PARKING_LOT_IS_FULL, e.type);
         }
     }
 
     @Test
-    public void givenVehicles_WhenExactParkingIsDone_ShouldReturnTrue() throws ParkingLotException {
-        ParkingLotSystem parkingLotSystem = new ParkingLotSystem(2, 1);
-        parkingLotSystem.parkVehicle(new Object(), 1);
-        parkingLotSystem.parkVehicle(vehicle, 1);
-        boolean isParked = parkingLotSystem.isVehicleParked(vehicle);
-        Assert.assertEquals(true, isParked);
+    public void givenAVehicle_WhenNotParkedInParkingLot_ShouldReturnFalse() {
+        vehicle = new Vehicle("1", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Roy");
+        boolean isPark = parkingLotSystem.isVehicleParked(vehicle);
+        Assert.assertFalse(isPark);
     }
 
     @Test
-    public void givenParkingLotFull_OwnerShouldShowFullSign() throws ParkingLotException {
-        Owner owner = new Owner();
-        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(3, 1);
-        parkingLotSystem1.register(owner);
-        parkingLotSystem1.parkVehicle(vehicle, 1);
-        parkingLotSystem1.parkVehicle(new Object(), 2);
-        parkingLotSystem1.parkVehicle(new Object(), 3);
-        Assert.assertEquals(owner.getSign(), Owner.Sign.PARKING_IS_FULL);
+    public void givenAVehicle_WhenUnParkedFromParkingLot_ShouldReturnTrue() {
+        try {
+            Vehicle vehicleOne = new Vehicle("1", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                    Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Roy");
+            parkingLotSystem.park(vehicleOne);
+            parkingLotSystem.unPark(vehicleOne);
+            boolean isUnPark = parkingLotSystem.isVehicleUnPark(vehicleOne);
+            Assert.assertTrue(isUnPark);
+        } catch (ParkingLotSystemException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void givenLatestVehicle_ShouldParkAtTheNearestEmptySpace() throws ParkingLotException {
-        parkingLotSystem.parkVehicle(vehicle, 1);
-        parkingLotSystem.parkVehicle(new Object(), 2);
-        parkingLotSystem.parkVehicle(new Object(), 2);
-        parkingLotSystem.unParkVehicle(vehicle, attendant.getMyParkingSlot(vehicle), 1, 2);
-        parkingLotSystem.parkVehicle(vehicle, 3);
-        Integer parkingSlot = attendant.getMyParkingSlot(vehicle);
-        Assert.assertEquals((Integer) 1, parkingSlot);
+    public void givenAVehicle_WhenNoVehicleUnParked_ShouldThrowException() {
+        try {
+            Vehicle vehicleOne = new Vehicle("1", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                    Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Joy");
+            Vehicle vehicleTwo = new Vehicle("2", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                    Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Joy");
+            parkingLotSystem.park(vehicleOne);
+            parkingLotSystem.isVehicleUnPark(vehicleOne);
+            parkingLotSystem.unPark(vehicleTwo);
+
+        } catch (ParkingLotSystemException e) {
+            Assert.assertEquals(ParkingLotSystemException.ExceptionType.NOT_PARKED_HERE, e.type);
+        }
     }
 
     @Test
-    public void givenParkingLotFull_SecurityShouldBeCalled() throws ParkingLotException {
-        AirportSecurityPersonal securityPersonal = new AirportSecurityPersonal();
-        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(3, 1);
-        parkingLotSystem1.register(securityPersonal);
-        parkingLotSystem1.parkVehicle(vehicle, 2);
-        parkingLotSystem1.parkVehicle(new Object(), 1);
-        parkingLotSystem1.parkVehicle(new Object(), 2);
-        Assert.assertEquals(true, securityPersonal.redirectSecurityStaff());
+    public void givenAVehicle_WhenNotUnParked_ShouldReturnFalse() {
+        Vehicle vehicleOne = new Vehicle("1", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Roy");
+        try {
+            parkingLotSystem.park(vehicleOne);
+            boolean isUnPark = parkingLotSystem.isVehicleUnPark(vehicleOne);
+            Assert.assertFalse(isUnPark);
+        } catch (ParkingLotSystemException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void givenParkingNotLotFull_SecurityShouldNotBeCalled() throws ParkingLotException {
-        AirportSecurityPersonal securityPersonal = new AirportSecurityPersonal();
-        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(3, 1);
-        parkingLotSystem1.register(securityPersonal);
-        parkingLotSystem1.parkVehicle(vehicle, 1);
-        parkingLotSystem1.parkVehicle(new Object(), 2);
-        Assert.assertEquals(false, securityPersonal.redirectSecurityStaff());
+    public void givenAVehicle_WhenThereIsSpace1inParkingLot_ShouldAllowToPark() {
+        Vehicle vehicleOne = new Vehicle("1", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Roy");
+        Vehicle vehicleTwo = new Vehicle("2", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Roy");
+        Vehicle vehicleThree = new Vehicle("3", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Joy");
+        try {
+            parkingLotSystem.park(vehicleOne);
+            parkingLotSystem.park(vehicleTwo);
+            parkingLotSystem.unPark(vehicleTwo);
+            parkingLotSystem.park(vehicleThree);
+            boolean isPark = parkingLotSystem.isVehicleParked(vehicleThree);
+            Assert.assertTrue(isPark);
+        } catch (ParkingLotSystemException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void givenParkingLotFull_WhenVehicleUnParked_OwnerShouldRemoveFullSign() throws ParkingLotException {
-        Owner owner = new Owner();
-        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(3, 1);
-        parkingLotSystem1.register(owner);
-        parkingLotSystem1.parkVehicle(vehicle, 1);
-        parkingLotSystem1.parkVehicle(new Object(), 2);
-        parkingLotSystem1.parkVehicle(new Object(), 2);
-        parkingLotSystem1.unParkVehicle(vehicle, attendant.getMyParkingSlot(vehicle), 1, 3);
-        Assert.assertEquals(owner.getSign(), null);
+    public void givenAVehicle_WhenAlreadyParked_ShouldThrowException() {
+        Vehicle vehicleOne = new Vehicle("1", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.BMW, "Roy");
+        try {
+            parkingLotSystem.park(vehicleOne);
+            parkingLotSystem.park(vehicleOne);
+        } catch (ParkingLotSystemException e) {
+            Assert.assertEquals(ParkingLotSystemException.ExceptionType.VEHICLE_ALREADY_PARKED, e.type);
+        }
     }
 
     @Test
-    public void givenParkingTime_ParkingBillShouldBeGenerated() throws ParkingLotException {
-        parkingLotSystem.parkVehicle(vehicle, 1);
-        Integer parkingSlot = attendant.getMyParkingSlot(vehicle);
-        parkingLotSystem.unParkVehicle(vehicle, parkingSlot, 1, 4);
-        Assert.assertEquals(7.5, parkingBill.generateParkingBill(), 0);
+    public void givenAVehicle_WhenAskForPosition_ShouldReturnPosition() {
+        Vehicle vehicleOne = new Vehicle("1", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Roy");
+        try {
+            parkingLotSystem.park(vehicleOne);
+            String vehiclePosition = parkingLotSystem.getVehiclePosition(vehicleOne);
+            Assert.assertEquals("A1 1", vehiclePosition);
+        } catch (ParkingLotSystemException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void givenMultipleParkingLots_WhenVehicleUnParked_ShouldGetLotNumber() throws ParkingLotException {
-         ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(4, 2);
-        parkingLotSystem1.parkVehicle(vehicle, 1);
-        parkingLotSystem1.parkVehicle(new Object(), 2);
-        parkingLotSystem1.parkVehicle(new Object(), 2);
-        parkingLotSystem1.parkVehicle(new Object(),3);
-        boolean isUnParked = parkingLotSystem1.unParkVehicle(vehicle,
-                attendant.getMyParkingSlot(vehicle),
-                attendant.getLotNumber(vehicle),
-                3);
-        Assert.assertEquals(true,isUnParked);
+    public void givenAVehicle_WhenToPark_ShouldReturnParkingDateTime() {
+        vehicle = new Vehicle("1", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.BMW, "Roy");
+        try {
+            parkingLotSystem.park(vehicle);
+            String dateTime = formatter.format(date);
+            String parkingDateAndTime = vehicle.getParkingDateAndTime();
+            Assert.assertEquals(dateTime, parkingDateAndTime);
+        } catch (ParkingLotSystemException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void givenVehicleTypeIsLarge_ShouldParkedAtMostFreeSpace() throws ParkingLotException {
-        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(4, 2);
-        Vehicle vehicle1 = new Vehicle(Vehicle.VehicleType.LARGE);
-        parkingLotSystem1.parkVehicle(vehicle, 1);
-        parkingLotSystem1.parkVehicle(vehicle1, 2);
-        Integer getParkingLot = attendant.getLotNumber(vehicle1);
-        Integer getParkingSlot = attendant.getMyParkingSlot(vehicle1);
-        Assert.assertEquals("1 1", getParkingLot + " " + getParkingSlot);
+    public void givenAVehicles_WhenParkedInParkingLot_ShouldEvenlyDistributeInParkingLot() {
+        Vehicle vehicleOne = new Vehicle("1", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Roy");
+        Vehicle vehicleTwo = new Vehicle("2", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.BMW, "Joy");
+        try {
+            parkingLotSystem.park(vehicleOne);
+            parkingLotSystem.park(vehicleTwo);
+            String vehicle1Position = parkingLotSystem.getVehiclePosition(vehicleOne);
+            String vehicle2Position = parkingLotSystem.getVehiclePosition(vehicleTwo);
+            Assert.assertEquals("A1 1", vehicle1Position);
+            Assert.assertEquals("A2 1", vehicle2Position);
+        } catch (ParkingLotSystemException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void givenVehicleColour_PoliceShouldGetTheListOfVehicleLocation() throws ParkingLotException {
-        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(8, 2);
-        Vehicle vehicle1 = new Vehicle("white");
-        parkingLotSystem1.parkVehicle(vehicle, 1);
-        parkingLotSystem1.parkVehicle(vehicle1, 2);
-        parkingLotSystem1.parkVehicle(new Vehicle("black"),1);
-        parkingLotSystem1.parkVehicle(new Vehicle("white"),1);
-        parkingLotSystem1.parkVehicle(new Vehicle("black"),1);
-        parkingLotSystem1.parkVehicle(new Vehicle("red"),1);
-        PoliceDepartment police = new PoliceDepartment(parkingLotSystem1);
-        List list = police.getColouredVehicleList("white");
-        Assert.assertEquals(3,list.size());
+    public void givenAVehicle_WhenDriverIsHandicap_ShouldParkVehicleAtNearestLotPosition() {
+        Vehicle vehicleOne = new Vehicle("1", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.BMW, "Roy");
+        Vehicle vehicleTwo = new Vehicle("2", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Roy");
+        Vehicle vehicleThree = new Vehicle("3", Vehicle.DriverType.HANDICAP, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.BMW, "Roy");
+        try {
+            parkingLotSystem.park(vehicleOne);
+            parkingLotSystem.park(vehicleTwo);
+            parkingLotSystem.unPark(vehicleOne);
+            parkingLotSystem.park(vehicleThree);
+            String vehicleThreePosition = parkingLotSystem.getVehiclePosition(vehicleThree);
+            Assert.assertEquals("A1 1", vehicleThreePosition);
+        } catch (ParkingLotSystemException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void givenVehicle_WhenCompanyNameProvided_ShouldReturnListOfVehicles() throws ParkingLotException {
-        ParkingLotSystem parkingLotSystem1 = new ParkingLotSystem(8, 2);
-        Vehicle vehicle1 = new Vehicle("blue", "GJ06KL7860", "Toyota", attendant.attendantName);
-        parkingLotSystem1.parkVehicle(vehicle, 1);
-        parkingLotSystem1.parkVehicle(vehicle1, 2);
-        parkingLotSystem1.parkVehicle(new Vehicle("blue", "GJ06KL7860", "Toyota", attendant.attendantName), 1);
-        parkingLotSystem1.parkVehicle(new Vehicle("red", "GJ06KL1456", "Toyota", attendant.attendantName), 1);
-        parkingLotSystem1.parkVehicle(new Vehicle("blue", "GJ06KL9008", "Toyota", attendant.attendantName), 1);
-        parkingLotSystem1.parkVehicle(new Vehicle("white", "GJ06KL3845", "Toyota", attendant.attendantName), 1);
-        PoliceDepartment police = new PoliceDepartment(parkingLotSystem1);
-        List list = police.getDetailsOfParticularTypeOfVehicle("Toyota", "blue");
-        Assert.assertEquals(3, list.size());
+    public void givenVehicleOfLargeSize_WhenMaximumNumberOfParkingSlotAvailable_ShouldParkedInThatParkingLot() {
+        Vehicle vehicleOne = new Vehicle("1", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Roy");
+        Vehicle vehicleTwo = new Vehicle("2", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.BMW, "Roy");
+        Vehicle vehicleThree = new Vehicle("3", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Joy");
+        Vehicle vehicleFour = new Vehicle("4", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.LARGE,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.BMW, "Roy");
+        try {
+            parkingLotSystem.park(vehicleOne);
+            parkingLotSystem.park(vehicleTwo);
+            parkingLotSystem.park(vehicleThree);
+            parkingLotSystem.park(vehicleFour);
+            String vehicleFourPosition = parkingLotSystem.getVehiclePosition(vehicleFour);
+            Assert.assertEquals("A2 2", vehicleFourPosition);
+        } catch (ParkingLotSystemException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void givenParkingLotMap_WhenNeedInformationAsPerVehicleColour_ShouldReturnVehicleMapWithRespectiveColour() {
+        PoliceDepartment policeDepartment = new PoliceDepartment(parkingLotSystem);
+        Vehicle vehicleOne = new Vehicle("1", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.BMW, "Roy");
+        Vehicle vehicleTwo = new Vehicle("2", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Joy");
+        Vehicle vehicleThree = new Vehicle("3", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Koy");
+        try {
+            parkingLotSystem.park(vehicleOne);
+            parkingLotSystem.park(vehicleTwo);
+            parkingLotSystem.park(vehicleThree);
+            Map<String, Vehicle> vehiclesOfColour = policeDepartment.getVehicles(Vehicle.VehicleColour.WHITE);
+            Assert.assertEquals(3, vehiclesOfColour.size());
+        } catch (ParkingLotSystemException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void givenParkingLot_WhenVehicleColorAndBrandMatch_ShouldReturnVehicleListWithColorBlueAndModelToyota() {
+        PoliceDepartment policeDepartment = new PoliceDepartment(parkingLotSystem);
+        Vehicle vehicleOne = new Vehicle("1", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.BLUE, Vehicle.VehicleModel.TOYOTA, "Roy");
+        Vehicle vehicleTwo = new Vehicle("2", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.LARGE,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Joy");
+        Vehicle vehicleThree = new Vehicle("3", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.BLUE, Vehicle.VehicleModel.BMW, "B");
+        try {
+            parkingLotSystem.park(vehicleOne);
+            parkingLotSystem.park(vehicleTwo);
+            parkingLotSystem.park(vehicleThree);
+            Map<String, Vehicle> vehiclesList = policeDepartment.getVehiclesWithColorAndModel(Vehicle.VehicleColour.BLUE,
+                    Vehicle.VehicleModel.TOYOTA);
+            Assert.assertEquals(1, vehiclesList.size());
+        } catch (ParkingLotSystemException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void givenParkingLot_WhenNeedVehicleOfParticularModel_ShouldReturnVehiclesInformationToConcernParty() {
+        PoliceDepartment policeDepartment = new PoliceDepartment(parkingLotSystem);
+        Vehicle vehicleOne = new Vehicle("1", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.BLUE, Vehicle.VehicleModel.BMW, "Roy");
+        Vehicle vehicleTwo = new Vehicle("2", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.LARGE,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.BMW, "Joy");
+        Vehicle vehicleThree = new Vehicle("3", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.BLUE, Vehicle.VehicleModel.TOYOTA, "Roy");
+        try {
+            parkingLotSystem.park(vehicleOne);
+            parkingLotSystem.park(vehicleTwo);
+            parkingLotSystem.park(vehicleThree);
+            Map<String, Vehicle> vehiclesOfParticularModel = policeDepartment.getVehiclesOfModel(Vehicle.VehicleModel.BMW);
+            Assert.assertEquals(2, vehiclesOfParticularModel.size());
+        } catch (ParkingLotSystemException e) {
+            e.printStackTrace();
+        }
     }
 }
