@@ -303,4 +303,25 @@ public class TestCasesForParkingLotSystem {
         } catch (ParkingLotSystemException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void givenParkingLot_WhenNeedInformationOfAllVehicles_ShouldReturnVehiclesList() {
+        PoliceDepartment policeDepartment = new PoliceDepartment(parkingLotSystem);
+        Vehicle vehicleOne = new Vehicle("1", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.BLUE, Vehicle.VehicleModel.BMW, "Roy");
+        Vehicle vehicleTwo = new Vehicle("2", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.LARGE,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.BMW, "Joy");
+        Vehicle vehicleThree = new Vehicle("3", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Joy");
+        try {
+            parkingLotSystem.park(vehicleOne);
+            parkingLotSystem.park(vehicleTwo);
+            parkingLotSystem.park(vehicleThree);
+            Map<String, Vehicle> allVehicles = policeDepartment.getAllParkedVehicles();
+            Assert.assertEquals(3, allVehicles.size());
+        } catch (ParkingLotSystemException e) {
+            e.printStackTrace();
+        }
+    }
 }
