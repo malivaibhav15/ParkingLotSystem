@@ -5,6 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Map;
 
@@ -13,8 +15,9 @@ public class TestCasesForParkingLotSystem {
     Vehicle vehicle = null;
     ParkingLotOwner parkingLotOwner = null;
     AirportSecurity airportSecurity = null;
-    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-    Date date = new Date();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    LocalDateTime dateTime = LocalDateTime.now();
+    String formattedDateTime = formatter.format(dateTime);
 
     @Before
     public void setUp() {
@@ -153,8 +156,8 @@ public class TestCasesForParkingLotSystem {
                 Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.BMW, "Roy");
         try {
             parkingLotSystem.park(vehicle);
-            String dateTime = formatter.format(date);
-            String parkingDateAndTime = vehicle.getParkingDateAndTime();
+            LocalDateTime dateTime = LocalDateTime.parse(formattedDateTime, formatter);
+            LocalDateTime parkingDateAndTime = vehicle.parkingDateAndTime;
             Assert.assertEquals(dateTime, parkingDateAndTime);
         } catch (ParkingLotSystemException e) {
             e.printStackTrace();
@@ -281,4 +284,23 @@ public class TestCasesForParkingLotSystem {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void givenParkingLot_WhenVehicleParkedInLastHalfHourMinutes_ShouldReturnVehiclesList() {
+        PoliceDepartment policeDepartment = new PoliceDepartment(parkingLotSystem);
+        Vehicle vehicleOne = new Vehicle("1", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.BLUE, Vehicle.VehicleModel.BMW, "Roy");
+        Vehicle vehicleTwo = new Vehicle("2", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.LARGE,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.BMW, "Joy");
+        Vehicle vehicleThree = new Vehicle("3", Vehicle.DriverType.NORMAL, Vehicle.VehicleSize.SMALL,
+                Vehicle.VehicleColour.WHITE, Vehicle.VehicleModel.TOYOTA, "Joy");
+        try {
+            parkingLotSystem.park(vehicleOne);
+            parkingLotSystem.park(vehicleTwo);
+            parkingLotSystem.park(vehicleThree);
+            Map<String, Vehicle> vehiclesParkedInLastHalfHour = policeDepartment.getVehiclesParkedFromLastMinutes(30);
+            Assert.assertEquals(3, vehiclesParkedInLastHalfHour.size());
+        } catch (ParkingLotSystemException e) {
+            e.printStackTrace();
+        }
 }
