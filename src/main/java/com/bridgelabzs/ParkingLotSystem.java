@@ -10,7 +10,7 @@ public class ParkingLotSystem {
     ParkingLotOwner parkingLotOwner;
     AirportSecurity airportSecurity;
     ParkingAttendant parkingAttendant;
-    Map<String, Vehicle> vehicleMap;
+    public Map<String, Vehicle> vehicleMap;
 
     //CONSTRUCTOR
     public ParkingLotSystem(int NUMBER_OF_PARKING_LOTS, int SIZE_OF_PARKING_LOT) {
@@ -68,6 +68,6 @@ public class ParkingLotSystem {
 
     //METHOD TO GET NUMBER OF VEHICLES PARKED IN A PARKING LOT
     public int getNumberOfVehiclesParked(int parkingLotNumber) {
-        return (int) vehicleMap.keySet().stream().filter(key -> key.contains("A" + parkingLotNumber)).count();
+        return (int) vehicleMap.keySet().stream().filter(key -> key.contains(parkingLotNumber + "A")).count();
     }
 }
