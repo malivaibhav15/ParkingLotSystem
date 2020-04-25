@@ -41,4 +41,10 @@ public class PoliceDepartment {
                 .filter(entry -> entry.getValue().parkingDateAndTime.getMinute() - LocalDateTime.now().getMinute() <= minutes)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
+
+    //METHOD TO GET VEHICLES OF PARTICULAR COLOUR AND RETUNING MAP
+    public Map<String, Vehicle> getAllParkedVehicles() {
+        return vehicles = parkingLotSystem.vehicleMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
 }
